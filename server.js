@@ -12,6 +12,27 @@ const db = mysql.createPool({
   connectTimeout: 10000,
 });
 
+// Fix usuarios
+app.get('/fix-usuarios', async (req, res) => {
+  try {
+    await db.query('DELETE FROM usuarios');
+    await db.query(
+      `INSERT INTO usuarios (id, usuario, nombre, contrasena, tipo_usuario, email, activo) VALUES 
+      (1,'tilin','leobardo',?,'usuario','pajaro@gmail.com',1),
+      (2,'pajaro','tilin',?,'admin','',1),
+      (8,'LiamGn_','Liam Gonzalez',?,'admin','liamgonzalez1707@gmail.com',1)`,
+      [
+        '$2y$10$qRkFz3QXk753CXVfjaVsnO98tAX5KljsFFmIpDlfEGGIV3hRr7hxK',
+        '$2y$10$qG48wY8gBTwLt1VZ/ku4AOHKW4n10AIqOAQKDVv7JNT2Cp0ZBp62q',
+        '$2y$10$s0NZsWEb9vBOOpHTHjBiwuSqHNnXGZIjNGYtuPCRiRWCZQEPiBedu'
+      ]
+    );
+    res.send('Usuarios corregidos!');
+  } catch (e) {
+    res.send('Error: ' + e.message);
+  }
+});
+
 // Arduino
 app.get('/api', async (req, res) => {
   const h = parseInt(req.query.h) || 0;
